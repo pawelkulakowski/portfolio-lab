@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+{% block content %}
+    <header>
+        <nav class="container container--70">
+            {% include 'header_login.html' %}
+            {% include 'header_with_donation.html' %}
+        </nav>
+    </header>
+    <div class="slogan container container--90">
+        <h2>Imię: {{ user.first_name }}<br/>
+            Nazwisko: {{ user.last_name }}<br/>
+            Email: {{ user.email }}</h2>
+    </div>
+
+    <h2>Lista przekazanych darów:
+
+        <ul>
+            {% for donation in donations %}
+                <li>
+                    Ilość worków: {{ donation.quantity }}<br/>
+                    Nazwa orgnizacji: {{ donation.institution.name }}<br/>
+                    Kategorie:
+                    {% for category in donation.categories.all %}{{ category.name }} ,{% endfor %}<br/>
+                    Data zbiórki: {{ donation.pick_up_date }}<br/><br/>
+                    <form action="{% url 'change-status-donation' donation.id %}" method="POST">
+                        {% csrf_token %}
+                        <input type="submit">Zmien statu</input>
+                    </form>
+                </li>
+                {% empty %}
+                <li>Brak aktywnych darów</li>
+            {% endfor %}
+        </ul>
+    </h2>
+    </div>
+    <div style="color: red">
+        <h2>
+            Lista zarchiwizowanych darów:
+            <ul>
+                {% for donation in donations_taken %}
+                    <li>
+                        Ilość worków: {{ donation.quantity }}<br/>
+                        Nazwa orgnizacji: {{ donation.institution.name }}<br/>
+                        Kategorie:
+                        {% for category in donation.categories.all %}{{ category.name }} ,{% endfor %}<br/>
+                        Data zbiórki: {{ donation.pick_up_date }}<br/><br/>
+                    </li>
+                {% empty %}
+                    <li>
+                        Brak zarchiwizowanych darów
+                    </li>
+                {% endfor %}
+            </ul>
+        </h2>
+    </div>
+{% endblock %}
