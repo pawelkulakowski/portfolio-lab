@@ -14,7 +14,8 @@ class Category(models.Model):
         return self.name
 
     class Meta:
-        verbose_name_plural = 'Categories'
+        verbose_name = 'Kategoria'
+        verbose_name_plural = 'Kategorie'
 
 class Insitution(models.Model):
     name = models.CharField(max_length=256)
@@ -25,19 +26,27 @@ class Insitution(models.Model):
     def __str__(self):
         return self.name
 
+    class Meta:
+        verbose_name = 'Instytucja'
+        verbose_name_plural = 'Instytucje'
+
 class Donation(models.Model):
-    quantity = models.IntegerField()
-    categories = models.ManyToManyField(Category)
-    institution = models.ForeignKey(Insitution, on_delete=models.CASCADE)
-    address = models.TextField() # do sprawdzenia !!
-    phone_number = models.IntegerField()
-    city = models.CharField(max_length=128)
-    zip_code = models.IntegerField()
-    pick_up_date = models.DateField()
-    pick_up_time = models.DateTimeField()
-    pick_up_comment = models.TextField()
-    user = models.ForeignKey(User, null=True, on_delete=models.SET_NULL, related_name='donations') # domyślnie nullem?
-    is_taken = models.BooleanField(default=False, null=True, blank=True)
+    quantity = models.IntegerField(default=0, verbose_name='Liczba worków')
+    categories = models.ManyToManyField(Category, verbose_name='Kategorie')
+    institution = models.ForeignKey(Insitution, on_delete=models.CASCADE, verbose_name='Instytucja')
+    address = models.CharField(max_length=256, verbose_name='Adres')
+    phone_number = models.CharField(max_length=128, verbose_name='Numer telefonu')
+    city = models.CharField(max_length=128, verbose_name='Miejscowość')
+    zip_code = models.CharField(max_length=64, verbose_name='Kod pocztowy')
+    pick_up_date = models.DateField(verbose_name='Data odbioru')
+    pick_up_time = models.TimeField(verbose_name='Godzina odbioru')
+    pick_up_comment = models.TextField(verbose_name='Komentarz')
+    user = models.ForeignKey(User, null=True, on_delete=models.SET_NULL, related_name='donations', verbose_name='Użytkownik') # domyślnie nullem?
+    is_taken = models.BooleanField(default=False, null=True, blank=True, verbose_name='Odebrano')
 
     def __str__(self):
         return f'Dotacja dla {self.institution}: {self.quantity} x {self.categories.name}' #do poprawy
+
+    class Meta:
+        verbose_name = 'Dar'
+        verbose_name_plural = 'Dary'
